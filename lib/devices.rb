@@ -26,6 +26,9 @@ require 'cora'
     elsif(deviceName.match(/undercounter lights|under counter lights|under cabinet lights|cabinet lights|counter lights/i))
     return 28826
 
+    elsif(deviceName.match(/thermostat|temperature/i))
+    return "14%2013%2064%201"
+
     else 
     return 0
     end

@@ -2,7 +2,7 @@ require 'uri'
 require 'cora'
 require 'httparty'
 require 'rubygems'
-require 'devices.rb'
+require 'devices'
 require 'siri_objects'
 
 
@@ -29,9 +29,12 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
   listen_for(/ready to go|leave/i) {open_small_garage_door}
   listen_for(/pulling (in|up|in the driveway)/i) {open_small_garage_door}
   listen_for(/close the garage door/i) {close_small_garage_door}
+  listen_for (/cooling.*([0-9]{2})|cool setpoint.*([0-9]{2})|cooling setpoint.*([0-9]{2})/i) { |cooling_temp| set_cool_temp(cooling_temp) }
+  listen_for (/heat.*([0-9]{2})|heat setpoint.*([0-9]{2})|heating setpoint.*([0-9]{2})/i) { |heating_temp| set_heat_temp(heating_temp) }
 
 
-  listen_for /(siri) turn on (.*)/i do |keyword, query|
+
+  listen_for (/(siri) turn on (.*)/i) do |keyword, query|
     deviceName = URI.unescape(query.strip)
     deviceAddress = deviceCrossReference(deviceName)
 
@@ -60,7 +63,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
     request_completed
   end
 
-  listen_for /(siri) turn off (.*)/i do |keyword, query|
+  listen_for (/(siri) turn off (.*)/i) do |keyword, query|
     deviceName = URI.unescape(query.strip)
     deviceAddress = deviceCrossReference(deviceName)
 
@@ -84,7 +87,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
     request_completed
   end
 
-listen_for /(siri) get status of (.*)/i do |keyword, query|
+  listen_for (/(siri) get status of (.*)/i) do |keyword, query|
     deviceName = URI.unescape(query.strip)
     deviceAddress = deviceCrossReference(deviceName)
 
@@ -97,7 +100,67 @@ listen_for /(siri) get status of (.*)/i do |keyword, query|
          status = "no_status"
       end
     end
-end
+    request_completed
+  end
+
+  listen_for (/temperature.*inside|inside.*temperature|temperature.*in here/i) do |keyword, query|
+    #deviceName = URI.unescape(query.strip)
+    deviceName = "thermostat"
+    deviceAddress = deviceCrossReference(deviceName)
+
+    if deviceAddress != 0
+       #say "Checking the inside temperature."
+       check_status = Cmd.get("#{self.host}/rest/status/#{deviceAddress}", :basic_auth => @auth).inspect
+       indoor_temp = check_status.gsub(/^.*"ST\D+\d+\D+/, "")
+       indoor_temp = indoor_temp.gsub(/\D\d\d", "uom.*$/, "")
+       say "The current temperature in your house is #{indoor_temp} degrees."
+    end
+    request_completed 
+  end
+
+  listen_for (/thermostat.*status|status.*thermostat/i) do |keyword, query|
+    deviceName = "thermostat"
+    deviceAddress = deviceCrossReference(deviceName)
+
+       #say "Checking the status of the thermostat."
+       check_status = Cmd.get("#{self.host}/rest/status/#{deviceAddress}", :basic_auth => @auth).inspect
+
+       indoor_temp = check_status.gsub(/^.*"ST\D+\d+\D+/, "")
+       indoor_temp = indoor_temp.gsub(/\D\d\d", "uom.*$/, "")
+       say "The current temperature in your house is #{indoor_temp} degrees."
+	   
+       clispc = check_status.gsub(/^.*"CLISPC\D+\d+\", "\w+"=>"/, "")
+       clispc = clispc.gsub(/\D\d\d", "uom.*$/, "")
+       say "The cooling setpoint is #{clispc} degrees"
+	   
+       clisph = check_status.gsub(/^.*"CLISPH\D+\d+\", "\w+"=>"/, "")
+       clisph = clisph.gsub(/\D\d\d", "uom.*$/, "")
+       say "The heating setpoint is #{clisph} degrees"
+
+       climd = check_status.gsub(/^.*"CLIMD\D+\d+\", "\w+"=>"/, "")
+       climd = climd.gsub(/", "uom.*$/, "")
+       say "The mode is currently set to #{climd}"
+
+    request_completed 
+  end
+
+  def set_cool_temp(cooling_temp)
+    say "One moment while I set the cooling setpoint to #{cooling_temp} degrees."
+    deviceName = "thermostat"
+    deviceAddress = deviceCrossReference(deviceName)
+    cooling_temp = cooling_temp.to_i * 2   #necessary as thermostat input must be doubled
+    command = Cmd.get("#{self.host}/rest/nodes/#{deviceAddress}/set/CLISPC/#{cooling_temp}", :basic_auth => @auth).inspect
+    request_completed
+  end
+
+  def set_heat_temp(heating_temp)
+    say "One moment while I set the heating setpoint to #{heating_temp} degrees."
+    deviceName = "thermostat"
+    deviceAddress = deviceCrossReference(deviceName)
+    heating_temp = heating_temp.to_i * 2   #necessary as thermostat input must be doubled
+    command = Cmd.get("#{self.host}/rest/nodes/#{deviceAddress}/set/CLISPH/#{heating_temp}", :basic_auth => @auth).inspect
+    request_completed
+  end
 
   def anything_else
     response = ask "Is there anything else you would like me to do?"
@@ -146,7 +209,7 @@ end
           request_completed 
     end
 
-#listen_for /turn on/i do
+#listen_for (/turn on/i) do
     #response = ask "What do you want me to turn on?" 
 
     #if(response =~ /kitchen light/i) 
