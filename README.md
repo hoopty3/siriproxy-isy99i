@@ -40,54 +40,54 @@ It may also be helpful to look at this [video by jbaybayjbaybay] (http://www.you
 Usage
 -----
 
-**Turn on <device name>** -
-Will check the status of that device and determine its state.  
-If it's On and it's a dimmer, Siri will give you the status and ask if you want to adjust the brightness settings.  
-If it's Off and it's a dimmer, Siri will ask what percent you would like to turn it On to.  It it's not dimmable, it will just turn On.
-If it's On, Siri will alert you that it is already On.
-Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
+**Turn on (device name)** -
+	Will check the status of that device and determine its state.  
+	If it's On and it's a dimmer, Siri will give you the status and ask if you want to adjust the brightness settings.  
+	If it's Off and it's a dimmer, Siri will ask what percent you would like to turn it On to.  It it's not dimmable, it will just turn On.
+	If it's On, Siri will alert you that it is already On.
+	Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
 
-**Turn off <device name>** -
-Will check the status of that device and determine its state.  
-If it's On, Siri will shut it Off.  
-If it's Off, Siri will alert you that it is already Off.
-Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
+**Turn off (device name)** -
+	Will check the status of that device and determine its state.  
+	If it's On, Siri will shut it Off.  
+	If it's Off, Siri will alert you that it is already Off.
+	Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
 
-**Get status of <device name>** -
-Siri will request the status of the device from the ISY-99i and report it back to you.
-Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
+**Get status of (device name)** -
+	Siri will request the status of the device from the ISY-99i and report it back to you.
+	Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
 
-**Dim/turn up/turn down/set dimmer on/set level on <device>-
-If device is dimmable, Siri will ask what you would like to set the On percentage to and then issue the command to change that setting.
-Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
-**NOTE** This particular function hasn't been behaving very well for me.  Siri has a hard time understanding the word 'dim'.  At least when I speak it.  If anyone has any ideas on how to improve this, let me know!
+**Dim/turn up/turn down/set dimmer on/set level on (device name)**-
+	If device is dimmable, Siri will ask what you would like to set the On percentage to and then issue the command to change that setting.
+	Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
+**NOTE -- This particular function hasn't been behaving very well for me.  Siri has a hard time understanding the word 'dim'.  At least when I speak it.  If anyone has any ideas on how to improve this, let me know!**
 
-**NOTE** Thermostat functions are currently limited to one thermostat.  I know there are many of you that have multiple thermostats in your setup, and it shouldn't be too hard to incorporate them into the code, but I only have one so that is what I coded.  I have it on my to do list...
+**NOTE -- Thermostat functions are currently limited to one thermostat.  I know there are many of you that have multiple thermostats in your setup, and it shouldn't be too hard to incorporate them into the code, but I only have one so that is what I coded.  I have it on my to do list...**
 
 **What is the temperature/inside inside/temperature temperature/in here?**
-Gets current temperature from your thermostat and reports it to you.
+	Gets current temperature from your thermostat and reports it to you.
 
 **What is the status/thermostat thermostat/status?**
-Will retrieve and report the status of the following: current temp, cooling setpoing, heating setpoint, and mode.
+	Will retrieve and report the status of the following: current temp, cooling setpoing, heating setpoint, and mode.
 
-**Set cooling/cool setpoint/cooling setpoint to ##**
-Will set the cooling setpoint of your thermostat to whatever 2 digit value you tell it to.
+**Set cooling/cool setpoint/cooling setpoint to (##)**
+	Will set the cooling setpoint of your thermostat to whatever 2 digit value you tell it to.
 
-**Set heat/heating/heat setpoint/heating setpoint to ##**
-Will set the heating setpoint of your thermostat to whatever 2 digit value you tell it to.
+**Set heat/heating/heat setpoint/heating setpoint to (##)**
+	Will set the heating setpoint of your thermostat to whatever 2 digit value you tell it to.
 
-Above are the main arguments that Siri will use with the ISY-99i controller.  I have programmed in some specific phrases and instructions for my use.  These can be found in the siriproxy-isy99i.rb file.  Feel free to edit these and make it your own.  I only ask that you share any funny or neat applications that you come up with.
+Above are the main arguments that have been coded so far for use with the ISY-99i controller.  I have programmed in some specific phrases and instructions for my use.  These can be found in the siriproxy-isy99i.rb file.  Feel free to edit these and make it your own.  I only ask that you share any funny or neat applications that you come up with.
 
 Example:  
-Me:  Merry Christmas Siri!
-Siri: Merry Christmas, Jesse!  Do you want me to put the tree lights on?
-Me: Yes/sure/yep/ok/whatever
-Siri turns on the tree lights.
-Or...
-Me: No thanks
-Siri: Scrooge!
+	* Me:  Merry Christmas Siri!
+	* Siri: Merry Christmas, Jesse!  Do you want me to put the tree lights on?
+	* Me: Yes/sure/yep/ok/whatever
+	* Siri turns on the tree lights.
+	Or...
+	* Me: No thanks
+	* Siri: Scrooge!
 
-**NOTE** If/when you make changes to either devices.rb or siriproxy-isy99i.rb, you must copy it to the other plugin directory.  Remember, you put a copy in `~/.rvm/gems/ruby-1.9.3-p0@SiriProxy/gems/siriproxy-0.3.0/plugins` **AND** `home/SiriProxy/plugins`.  They both have to match!  Then follow steps 11 - 15 of the installation procedure to load up your changes and start the server again.
+**NOTE -- If/when you make changes to either devices.rb or siriproxy-isy99i.rb, you must copy it to the other plugin directory.  Remember, you put a copy in `~/.rvm/gems/ruby-1.9.3-p0@SiriProxy/gems/siriproxy-0.3.0/plugins` **AND** `home/SiriProxy/plugins`.  They both have to match!  Then follow steps 11 - 15 of the installation procedure to load up your changes and start the server again.**
 
 To Do List
 ----------
