@@ -30,7 +30,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
   listen_for(/pulling (in|up|in the driveway)/i) {open_small_garage_door}
   listen_for(/close the garage door/i) {close_small_garage_door}
   listen_for (/cooling.*([0-9]{2})|cool setpoint.*([0-9]{2})|cooling setpoint.*([0-9]{2})/i) { |cooling_temp| set_cool_temp(cooling_temp) }
-  listen_for (/heat.*([0-9]{2})|heat setpoint.*([0-9]{2})|heating setpoint.*([0-9]{2})/i) { |heating_temp| set_heat_temp(heating_temp) }
+  listen_for (/heat.*([0-9]{2})|heating.*([0-9]{2})|heat setpoint.*([0-9]{2})|heating setpoint.*([0-9]{2})/i) { |heating_temp| set_heat_temp(heating_temp) }
 
 
   listen_for (/turn on (.*)/i) do |device|
@@ -131,7 +131,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
   end
 
 
-  listen_for (/(dim|damn|jim|jimmer|turn down|turn up|set dimmer on|set level on|set the level on) (.*)/i) do |keywords, device|
+  listen_for (/(dim|damn|jim|jimmer|turn down|turn up|turnup|set dimmer on|set level on|set the level on) (.*)/i) do |keywords, device|
     deviceName = URI.unescape(device.strip)
     @dimmable = 0
     deviceAddress = deviceCrossReference(deviceName)
