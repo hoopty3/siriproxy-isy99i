@@ -60,12 +60,11 @@ Usage
 - Siri will request the status of the device from the ISY-99i and report it back to you.
 - Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
 
-**Dim/turn up/turn down/set dimmer on/set level on (device name)
-
-- NOTE -- This particular function hasn't been behaving very well for me.  Siri has a hard time understanding the word 'dim'.  At least when I speak it.  If anyone has any ideas on how to improve this, let me know!**
+**Dim/turn up/turn down/set dimmer on/set level on (device name)**
 
 - If device is dimmable, Siri will ask what you would like to set the On percentage to and then issue the command to change that setting.
 - Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
+- NOTE -- This particular function hasn't been behaving very well for me.  Siri has a hard time understanding the word 'dim'.  At least when I speak it.  If anyone has any ideas on how to improve this, let me know!
 
 **What is the temperature/inside inside/temperature temperature/in here?**
 
