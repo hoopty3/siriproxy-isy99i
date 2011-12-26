@@ -87,19 +87,14 @@ Usage
 
 Above are the main arguments that have been coded so far for use with the ISY-99i controller.  I have programmed in some specific phrases and instructions for my use.  These can be found in the siriproxy-isy99i.rb file.  Feel free to edit these and make it your own.  I only ask that you share any funny or neat applications that you come up with.
 
-Example:  
+Example:
+
 - Me:  Merry Christmas Siri!
-
 - Siri: Merry Christmas, Jesse!  Do you want me to put the tree lights on?
-
 - Me: Yes/sure/yep/ok/whatever
-
 - Siri turns on the tree lights.
-
 - Or...
-
 - Me: No thanks
-
 - Siri: Scrooge!
 
 **NOTE -- If/when you make changes to either devices.rb or siriproxy-isy99i.rb, you must copy it to the other plugin directory.  Remember, you put a copy in** `~/.rvm/gems/ruby-1.9.3-p0@SiriProxy/gems/siriproxy-0.3.0/plugins` **AND** `home/SiriProxy/plugins`**.  They both have to match!  Then follow steps 11 - 15 of the installation procedure to load up your changes and start the server again.**
