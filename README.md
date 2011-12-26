@@ -12,6 +12,8 @@ I would also like to point out that I am not a programmer, and haven't coded in 
 
 I am fully aware of the fact that the code could be cleaner, done differently, done better, or whatever.  Feel free to point out mistakes/corrections, offer constructive criticism, etc... This is a work in progress and I'm counting on the community to help make it better.
 
+**Above all: Use all the available resources out there if you have problems.  Trust me.  If I can put this together having never really programmed, you can figure out how to get it running.**
+
 Installation
 ------------
 
