@@ -60,14 +60,12 @@ Usage
 - Siri will request the status of the device from the ISY-99i and report it back to you.
 - Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
 
-**Dim/turn up/turn down/set dimmer on/set level on (device name) NOTE -- This particular function hasn't been behaving very well for me.  Siri has a hard time understanding the word 'dim'.  At least when I speak it.  If anyone has any ideas on how to improve this, let me know!**
+**Dim/turn up/turn down/set dimmer on/set level on (device name)
+
+- NOTE -- This particular function hasn't been behaving very well for me.  Siri has a hard time understanding the word 'dim'.  At least when I speak it.  If anyone has any ideas on how to improve this, let me know!**
 
 - If device is dimmable, Siri will ask what you would like to set the On percentage to and then issue the command to change that setting.
 - Otherwise, if Siri misunderstands you or that device isn't configured in devices.rb, you will be alerted that the device isn't programmed for control.
-
-
-
-**NOTE -- Thermostat functions are currently limited to one thermostat.  I know there are many of you that have multiple thermostats in your setup, and it shouldn't be too hard to incorporate them into the code, but I only have one so that is what I coded.  I have it on my to do list...**
 
 **What is the temperature/inside inside/temperature temperature/in here?**
 
@@ -84,6 +82,8 @@ Usage
 **Set heat/heating/heat setpoint/heating setpoint to (##)**
 
 - Will set the heating setpoint of your thermostat to whatever 2 digit value you tell it to.
+
+**NOTE -- Thermostat functions are currently limited to one thermostat.  I know there are many of you that have multiple thermostats in your setup, and it shouldn't be too hard to incorporate them into the code, but I only have one so that is how I wrote it.  I have multiples on my to do list...**
 
 Above are the main arguments that have been coded so far for use with the ISY-99i controller.  I have programmed in some specific phrases and instructions for my use.  These can be found in the siriproxy-isy99i.rb file.  Feel free to edit these and make it your own.  I only ask that you share any funny or neat applications that you come up with.
 
