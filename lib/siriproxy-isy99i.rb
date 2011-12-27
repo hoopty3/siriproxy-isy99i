@@ -37,6 +37,8 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
     deviceName = URI.unescape(device.strip)
     @dimmable = 0 #sets default as non-dimmable - must be set to 1 in devices file otherwise
     deviceAddress = deviceCrossReference(deviceName)
+    puts "deviceAddress = #{deviceAddress}"
+    puts "deviceName = #{deviceName}"
     if deviceAddress != 0
       check_status = Rest.get("#{self.host}/rest/status/#{deviceAddress}", :basic_auth => @auth).inspect
       status = check_status.gsub(/^.*tted"=>"/, "")
