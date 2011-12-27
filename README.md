@@ -74,7 +74,7 @@ Usage
 
 **What is the status/thermostat thermostat/status?**
 
-- Will retrieve and report the status of the following: current temp, cooling setpoing, heating setpoint, and mode.
+- Will retrieve and report the status of the following: current temp, cooling setpoint, heating setpoint, and mode.
 
 **Set cooling/cool setpoint/cooling setpoint to (##)**
 
