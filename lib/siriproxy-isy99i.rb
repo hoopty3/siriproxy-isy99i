@@ -54,7 +54,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
             else say "OK.  Suit yourself"
             end
         elsif status == "Off"
-          if @dimmable = 1
+          if @dimmable == 1
             dim_percent = ask "This device is dimmable.  What would you like to set the level to?"
             dim_percent_adj = dim_percent.to_i * 2.55 #converts percent to 0-255 setpoint
             dim_percent_adj = dim_percent_adj.to_i
@@ -64,7 +64,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
             Rest.get("#{self.host}/rest/nodes/#{deviceAddress}/cmd/DON", :basic_auth => @auth)
           end
         elsif status == "On"
-          if @dimmable = 1
+          if @dimmable == 1
             response = ask "This device is already On, and it's set to 100%. Do you want to change the level?"
               if (response =~ /yes|sure|yep|yeah|whatever|why not|ok|I guess/i)
                 dim_percent = ask "OK. What percentage would you like me to set #{deviceName} to?"
@@ -118,7 +118,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
           if status_dimmer > 0
             say "Status of #{deviceName} is On, and it's set to #{status_dimmer}%"
           elsif status == "On" || "Off"
-            if @dimmable = 1 && status == "On"
+            if @dimmable == 1 && status == "On"
               say "Status of #{deviceName} is On at 100%"
             else say "Status of #{deviceName} is #{status}"
             end
@@ -140,13 +140,13 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
       status = check_status.gsub(/^.*tted"=>"/, "")
       status = status.gsub(/", "uom.*$/, "")
       status_dimmer = status.to_i
-        if @dimmable = 1
+        if @dimmable == 1
           dim_percent = ask "What would you like to set the level to?"
           dim_percent_adj = dim_percent.to_i * 2.55 #converts percent to 0-255 setpoint
           dim_percent_adj = dim_percent_adj.to_i
           say "I am setting #{deviceName} to #{dim_percent.to_i}%."
           Rest.get("#{self.host}/rest/nodes/#{deviceAddress}/cmd/DON/#{dim_percent_adj}", :basic_auth => @auth)
-        elsif @dimmable = 0
+        elsif @dimmable == 0
           say "I'm sorry, but #{deviceName} is not dimmable."
         else status = "error"
              say "I'm sorry, but there seems to be an error and I am currently unable to control #{deviceName}"
