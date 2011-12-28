@@ -10,11 +10,13 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
   attr_accessor :password
   attr_accessor :username
   attr_accessor :host
+  attr_accessor :yourname
   
   def initialize(config)  
     self.password = config["password"]
     self.username = config["username"]
     self.host = config["host"]
+    self.yourname = config["yourname"]
     @auth = {:username => "#{self.username}", :password => "#{self.password}"}
   end
 
@@ -31,14 +33,18 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
   listen_for(/close the garage door/i) {close_small_garage_door}
   listen_for (/cooling.*([0-9]{2})|cool setpoint.*([0-9]{2})|cooling setpoint.*([0-9]{2})/i) { |cooling_temp| set_cool_temp(cooling_temp) }
   listen_for (/heat.*([0-9]{2})|heating.*([0-9]{2})|heat setpoint.*([0-9]{2})|heating setpoint.*([0-9]{2})/i) { |heating_temp| set_heat_temp(heating_temp) }
-
+  #listen_for(/test|text/i) {test}
 
   listen_for (/turn on (.*)/i) do |device|
     deviceName = URI.unescape(device.strip)
     @dimmable = 0 #sets default as non-dimmable - must be set to 1 in devices file otherwise
     deviceAddress = deviceCrossReference(deviceName)
-    puts "deviceAddress = #{deviceAddress}"
+      if deviceAddress.is_a?(Numeric)
+        scene = 1
+      end
     puts "deviceName = #{deviceName}"
+    puts "deviceAddress = #{deviceAddress}"
+    puts "scene = #{scene}"
     if deviceAddress != 0
       check_status = Rest.get("#{self.host}/rest/status/#{deviceAddress}", :basic_auth => @auth).inspect
       status = check_status.gsub(/^.*tted"=>"/, "")
@@ -55,7 +61,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
               Rest.get("#{self.host}/rest/nodes/#{deviceAddress}/cmd/DON/#{dim_percent_adj}", :basic_auth => @auth)
             else say "OK.  Suit yourself"
             end
-        elsif status == "Off"
+        elsif status == "Off" || scene == 1
           if @dimmable == 1
             dim_percent = ask "This device is dimmable.  What would you like to set the level to?"
             dim_percent_adj = dim_percent.to_i * 2.55 #converts percent to 0-255 setpoint
@@ -76,10 +82,10 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
                 Rest.get("#{self.host}/rest/nodes/#{deviceAddress}/cmd/DON/#{dim_percent_adj}", :basic_auth => @auth)
               else say "OK.  Suit yourself"
               end
-          else say "But master, that device is already On"
+          else say "But #{self.yourname}, that device is already On"
           end
         else status = "error"
-             say "I'm sorry, but there seems to be an error and I am currently unable to control #{deviceName}"
+             say "I'm sorry #{self.yourname}, but there seems to be an error and I am currently unable to control #{deviceName}"
         end
     else say "I'm sorry, but I am not programmed to control #{deviceName}."
     end
@@ -89,17 +95,24 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
   listen_for (/turn off (.*)/i) do |device|
     deviceName = URI.unescape(device.strip)
     deviceAddress = deviceCrossReference(deviceName)
+      if deviceAddress.is_a?(Numeric)
+        scene = 1
+      end
+    puts "deviceName = #{deviceName}"
+    puts "deviceAddress = #{deviceAddress}"
+    puts "scene = #{scene}"
       if deviceAddress != 0
         check_status = Rest.get("#{self.host}/rest/status/#{deviceAddress}", :basic_auth => @auth).inspect
         status = check_status.gsub(/^.*tted"=>"/, "")
         status = status.gsub(/", "uom.*$/, "")
-          if status == "On" || (status.to_i >= 1 && status.to_i <= 100)
+        puts "status = #{status}"
+          if status == "On" || (status.to_i >= 1 && status.to_i <= 100) || scene == 1
             say "I am now turning off #{deviceName}."
             Rest.get("#{self.host}/rest/nodes/#{deviceAddress}/cmd/DOF", :basic_auth => @auth)
           elsif status == "Off"
-            say "But master, that device is already off"
+            say "But #{self.yourname}, that device is already off"
           else status = "error"
-            say "I'm sorry, but there seems to be an error and I am currently unable to control #{deviceName}"
+            say "I'm sorry #{self.yourname}, but there seems to be an error and I am currently unable to control #{deviceName}"
           end
         else say "I'm sorry, but I am not programmed to control #{deviceName}."
           #say "#{anything_else}?"
@@ -112,7 +125,13 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
     deviceName = URI.unescape(device.strip)
     @dimmable = 0 #sets default as non-dimmable - has to be set to 1 in devices file otherwise
     deviceAddress = deviceCrossReference(deviceName)
-      if deviceAddress != 0
+      if deviceAddress.is_a?(Numeric)
+        scene = 1
+      end
+    puts "deviceName = #{deviceName}"
+    puts "deviceAddress = #{deviceAddress}"
+    puts "scene = #{scene}"
+      if deviceAddress != 0 && scene != 1
         check_status = Rest.get("#{self.host}/rest/status/#{deviceAddress}", :basic_auth => @auth).inspect
         status = check_status.gsub(/^.*tted"=>"/, "")
         status = status.gsub(/", "uom.*$/, "")
@@ -127,6 +146,8 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
           else status = "error"
             say "I'm sorry, but there seems to be an error and I am unable to return status for #{deviceName}"
           end
+      elsif scene == 1
+        say "I'm sorry, but I am unable to retrieve the status of a scene at this time"
       else say "I'm sorry, but I am not programmed to control #{deviceName}."
       end
     request_completed
@@ -239,7 +260,7 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
 
 
   def merry_christmas
-    response = ask "Merry Christmas master! Do you want me to put the tree lights on?"
+    response = ask "Merry Christmas #{self.yourname}! Do you want me to put the tree lights on?"
       if (response =~ /yes|sure|yep|yeah|whatever|why not|ok|I guess/i)
         Rest.get("#{self.host}/rest/nodes/24409/cmd/DON", :basic_auth => @auth)
       else say "Scrooge!"
@@ -251,6 +272,20 @@ class SiriProxy::Plugin::Isy99i < SiriProxy::Plugin
     say "Scrooge!"
     Rest.get("#{self.host}/rest/nodes/24409/cmd/DOF", :basic_auth => @auth)
     request_completed 
+  end
+
+  def test
+    deviceName = "cabinet light"
+    @dimmable = 0 #sets default as non-dimmable - must be set to 1 in devices file otherwise
+    deviceAddress = deviceCrossReference(deviceName)
+    puts "deviceName = #{deviceName}"
+    puts "deviceAddress = #{deviceAddress}"
+      if deviceAddress.is_a?(Numeric)
+        scene = 1
+        puts "scene = #{scene}"
+      else puts "this ain't workin"
+      end
+    request_completed
   end
   
 end
